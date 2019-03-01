@@ -13,8 +13,9 @@ namespace Main
             var parser = new FileIniDataParser();
             var data = parser.ReadFile("config.ini");
             var path = data["Config"]["Path"];
-            BackupUserEnvironment($@"{Path.Combine(path, $"user-env-{DateTime.Now:yyyyMMddHHmmss}.reg")}");
-            BackupSystemEnvironment($@"{Path.Combine(path, $"system-env-{DateTime.Now:yyyyMMddHHmmss}.reg")}");
+            var date = $"{DateTime.Now:yyyyMMddHHmmss}";
+            BackupUserEnvironment($@"{Path.Combine(path, $"user-env-{date}.reg")}");
+            BackupSystemEnvironment($@"{Path.Combine(path, $"system-env-{date}.reg")}");
         }
 
         private static void BackupUserEnvironment(string filepath)
