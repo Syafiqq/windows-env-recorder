@@ -28,23 +28,10 @@ namespace Main
         
         private static void TransverseUserEnvironment(string filepath)
         {
-            void InTransverseUserEnvironment(RegistryKey inKey, IniData inData)
-            {
-                if (inKey == null) return;
-                foreach (var v in inKey.GetValueNames())
-                {
-                    inData[inKey.Name][v] = (string) inKey.GetValue(v);
-                }
-                foreach (var v in inKey.GetSubKeyNames())
-                {
-                    if(v == null) continue;
-                    var child = inKey.OpenSubKey(v);
-                    InTransverseUserEnvironment(child, inData);
-                }
-            }
+            
             var data = new IniData();
             var key = Registry.CurrentUser.OpenSubKey("Environment");
-            InTransverseUserEnvironment(key, data);
+            TransverseEnvironment(key, data);
             var parser = new FileIniDataParser();
             parser.WriteFile(filepath, data);
         }
@@ -70,6 +57,21 @@ namespace Main
                 process.StartInfo = startInfo;
                 process.Start();
                 process.WaitForExit();
+            }
+        }
+        
+        static void TransverseEnvironment(RegistryKey inKey, IniData inData)
+        {
+            if (inKey == null) return;
+            foreach (var v in inKey.GetValueNames())
+            {
+                inData[inKey.Name][v] = (string) inKey.GetValue(v);
+            }
+            foreach (var v in inKey.GetSubKeyNames())
+            {
+                if(v == null) continue;
+                var child = inKey.OpenSubKey(v);
+                TransverseEnvironment(child, inData);
             }
         }
     }
