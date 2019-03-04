@@ -16,8 +16,9 @@ namespace Main
             var path = data["Config"]["Path"];
             var date = $"{DateTime.Now:yyyyMMddHHmmss}";
             //BackupUserEnvironment($@"{Path.Combine(path, $"user-env-{date}.reg")}");
-            TransverseUserEnvironment($@"{Path.Combine(path, $"user-env-{date}.ini")}");
             //BackupSystemEnvironment($@"{Path.Combine(path, $"system-env-{date}.reg")}");
+            //TransverseUserEnvironment($@"{Path.Combine(path, $"user-env-{date}.ini")}");
+            TransverseSystemEnvironment($@"{Path.Combine(path, $"system-env-{date}.ini")}");
         }
 
         private static void BackupUserEnvironment(string filepath)
@@ -28,7 +29,6 @@ namespace Main
         
         private static void TransverseUserEnvironment(string filepath)
         {
-            
             var data = new IniData();
             var key = Registry.CurrentUser.OpenSubKey("Environment");
             TransverseEnvironment(key, data);
@@ -40,6 +40,15 @@ namespace Main
         {
             var path = $@"{Registry.LocalMachine.Name}\SYSTEM\CurrentControlSet\Control\Session Manager\Environment";
             BackupRegistry(path, filepath);
+        }
+
+        private static void TransverseSystemEnvironment(string filepath)
+        {
+            var data = new IniData();
+            var key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Session Manager\Environment");
+            TransverseEnvironment(key, data);
+            var parser = new FileIniDataParser();
+            parser.WriteFile(filepath, data);
         }
 
         private static void BackupRegistry(string path, string filepath)
