@@ -16,7 +16,7 @@ namespace Main
             var path = data["Config"]["Path"];
             var date = $"{DateTime.Now:yyyyMMddHHmmss}";
             //BackupUserEnvironment($@"{Path.Combine(path, $"user-env-{date}.reg")}");
-            TransverseUserEnvironment($@"{Path.Combine(path, $"user-env-{date}.reg")}");
+            TransverseUserEnvironment($@"{Path.Combine(path, $"user-env-{date}.ini")}");
             //BackupSystemEnvironment($@"{Path.Combine(path, $"system-env-{date}.reg")}");
         }
 
@@ -28,24 +28,25 @@ namespace Main
         
         private static void TransverseUserEnvironment(string filepath)
         {
-            void _TransverseUserEnvironment(RegistryKey _key, IniData _data)
+            void InTransverseUserEnvironment(RegistryKey inKey, IniData inData)
             {
-                if (_key == null) return;
-                Console.WriteLine(_key.Name);
-                foreach (var v in _key.GetValueNames())
+                if (inKey == null) return;
+                foreach (var v in inKey.GetValueNames())
                 {
-                    Console.WriteLine(v);
+                    inData[inKey.Name][v] = (string) inKey.GetValue(v);
                 }
-                foreach (var v in _key.GetSubKeyNames())
+                foreach (var v in inKey.GetSubKeyNames())
                 {
                     if(v == null) continue;
-                    var child = _key.OpenSubKey(v);
-                    _TransverseUserEnvironment(child, _data);
+                    var child = inKey.OpenSubKey(v);
+                    InTransverseUserEnvironment(child, inData);
                 }
             }
             var data = new IniData();
             var key = Registry.CurrentUser.OpenSubKey("Environment");
-            _TransverseUserEnvironment(key, data);
+            InTransverseUserEnvironment(key, data);
+            var parser = new FileIniDataParser();
+            parser.WriteFile(filepath, data);
         }
 
         private static void BackupSystemEnvironment(string filepath)
