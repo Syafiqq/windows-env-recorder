@@ -69,18 +69,18 @@ namespace Main
             }
         }
         
-        static void TransverseEnvironment(RegistryKey inKey, IniData inData)
+        static void TransverseEnvironment(RegistryKey key, IniData data)
         {
-            if (inKey == null) return;
-            foreach (var v in inKey.GetValueNames())
+            if (key == null) return;
+            foreach (var v in key.GetValueNames())
             {
-                inData[inKey.Name][v] = (string) inKey.GetValue(v);
+                data[key.Name][v] = (string) key.GetValue(v);
             }
-            foreach (var v in inKey.GetSubKeyNames())
+            foreach (var v in key.GetSubKeyNames())
             {
                 if(v == null) continue;
-                var child = inKey.OpenSubKey(v);
-                TransverseEnvironment(child, inData);
+                var child = key.OpenSubKey(v);
+                TransverseEnvironment(child, data);
             }
         }
     }
