@@ -15,9 +15,9 @@ namespace Main
             var data = parser.ReadFile("config.ini");
             var path = data["Config"]["Path"];
             var date = $"{DateTime.Now:yyyyMMddHHmmss}";
-            //BackupUserEnvironment($@"{Path.Combine(path, $"user-env-{date}.reg")}");
-            //BackupSystemEnvironment($@"{Path.Combine(path, $"system-env-{date}.reg")}");
-            //TransverseUserEnvironment($@"{Path.Combine(path, $"user-env-{date}.ini")}");
+            BackupUserEnvironment($@"{Path.Combine(path, $"user-env-{date}.reg")}");
+            BackupSystemEnvironment($@"{Path.Combine(path, $"system-env-{date}.reg")}");
+            TransverseUserEnvironment($@"{Path.Combine(path, $"user-env-{date}.ini")}");
             TransverseSystemEnvironment($@"{Path.Combine(path, $"system-env-{date}.ini")}");
         }
 
